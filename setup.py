@@ -13,7 +13,7 @@ scripts = []
 setup(
     name="mobmetric",
     version="0.0.1",
-    description="Individual mobility simulation",
+    description="Mobility metrics",
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
     author="Ye Hong",
