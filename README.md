@@ -9,11 +9,15 @@ pip install -e .
 
 ## Evaluate
 
+### Entropy
+- Random Entropy
+- Uncorrelated Entropy
+- Real Entropy
 Run 
 ```
-python example/run.py
+python example/run_entropy.py
 ```
-for evaluating the location traces using implemented metrics. 
+for examples of calculating entropy for location traces. 
 
 
 ## Known issues:
