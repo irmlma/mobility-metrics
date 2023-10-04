@@ -20,7 +20,7 @@ setup(
     author_email=("hongy@ethz.ch"),
     license="Apache-2.0",
     url="https://github.com/irmlma/mobility-metrics",
-    install_requires=["geopandas", "trackintel"],
+    install_requires=["geopandas", "trackintel","powerlaw"],
     classifiers=[
         "License :: OSI Approved :: Apache Software License",
         "Intended Audience :: Science/Research",

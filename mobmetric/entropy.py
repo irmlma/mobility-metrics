@@ -102,7 +102,7 @@ def _random_entropy_user(sp_user):
 
     Parameters
     ----------
-    stps_user : Geodataframe (as trackintel staypoints)
+    stps_user : Geodataframe
         The staypoints from an individual, should contain column "location_id".
 
     Returns
@@ -119,7 +119,7 @@ def _uncorrelated_entropy_user(stps_user):
 
     Parameters
     ----------
-    stps_user : Geodataframe (as trackintel staypoints)
+    stps_user : Geodataframe
         The staypoints from an individual, should contain column "location_id".
 
     Returns
@@ -137,7 +137,7 @@ def _real_entropy_user(stps_user):
 
     Parameters
     ----------
-    stps_user : Geodataframe (as trackintel staypoints)
+    stps_user : Geodataframe
         The staypoints from an individual, should contain column "location_id".
 
     Returns
