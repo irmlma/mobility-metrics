@@ -19,21 +19,21 @@ python example/run_entropy.py
 ```
 for examples of calculating entropy for location traces. 
 
-### Location frquency
+### Basic metrics
 Run 
 ```
-python example/run_loc_f.py
+python example/run_metrics.py
 ```
-for examples of calculating location visitation frquency. 
+for examples of calculating basic mobility metrics. The metric can be specified with the input arguement `metric`, accepting one of the  arguements ["rg", "locf", "jump"]: 
+- Location visitation frquency. 
+- Radius of gyration. Radius of gyration can be calculated either a) with visitation frequency of locations or b) weighting the locations by their activity duration.
+- Jump length. Distance of moving between consecutive locations. 
 
-### Radius of gyration
-Run 
-```
-python example/run_rg.py
-```
-for examples of calculating radius of gyration. Radius of gyration can be calculated with weighting locations by their activity duration.
+Dataset distribution plots will be shown after metric calculation. 
 
 ## Known issues:
 
 
 ## TODO:
+- wait time
+- mobility motifs

@@ -32,15 +32,70 @@ def radius_gyration(sp, print_progress=False, method="count"):
     """
     if print_progress:
         tqdm.pandas(desc="User radius of gyration calculation")
-        s = sp.groupby("user_id").progress_apply(lambda x: radius_gyration_user(x, method))
+        s = sp.groupby("user_id").progress_apply(lambda x: _radius_gyration_user(x, method))
     else:
-        s = sp.groupby("user_id").apply(lambda x: radius_gyration_user(x, method))
+        s = sp.groupby("user_id").apply(lambda x: _radius_gyration_user(x, method))
 
     s.rename("radiusGyration", inplace=True)
     return s
 
 
-def radius_gyration_user(sp_user, method):
+def jump_length(sp):
+    """
+    Jump length between consecutive locations.
+
+    Parameters
+    ----------
+    sp : Geodataframe
+        Staypoints with geometry in latitude and longitude.
+
+    Returns
+    -------
+    np.array
+        Array containing the jump lengths.
+
+    References
+    ----------
+    [1] Gonzalez, M. C., Hidalgo, C. A., & Barabasi, A. L. (2008). Understanding individual human mobility patterns. Nature, 453(7196), 779-782.
+
+    """
+    pts = sp.geometry.values
+    return np.array([haversine_dist(pts[i - 1].x, pts[i - 1].y, pts[i].x, pts[i].y)[0] for i in range(1, len(pts))])
+
+
+def location_frquency(sp):
+    """Location visit frquency for datasets
+
+    Parameters
+    ----------
+    sp : Geodataframe
+        Staypoints with column "location_id" and "user_id".
+
+    Returns
+    -------
+    s: list
+        the ranked visit frquency.
+
+    References
+    ----------
+    [1] Gonzalez, M. C., Hidalgo, C. A., & Barabasi, A. L. (2008). Understanding individual human mobility patterns. Nature, 453(7196), 779-782.
+
+    """
+
+    # get visit times per user and location
+    freq = sp.groupby(["user_id", "location_id"], as_index=False).size()
+    # get the rank of locations per user
+    freq["visitRank"] = freq.groupby("user_id")["size"].rank(ascending=False, method="first")
+    # get the average visit freqency for every rank
+    pLoc = freq.groupby("visitRank")["size"].mean().values
+
+    # normalize
+    pLoc = pLoc / pLoc.sum()
+
+    return pLoc
+
+
+def _radius_gyration_user(sp_user, method):
     """
     User level radius of gyration calculation, see radius_gyration() for details.
 
