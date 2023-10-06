@@ -1,6 +1,6 @@
 import numpy as np
 from tqdm import tqdm
-
+import pandas as pd
 
 from trackintel.geogr.point_distances import haversine_dist
 
@@ -56,11 +56,37 @@ def jump_length(sp):
 
     References
     ----------
-    [1] Gonzalez, M. C., Hidalgo, C. A., & Barabasi, A. L. (2008). Understanding individual human mobility patterns. Nature, 453(7196), 779-782.
+    [1] Brockmann, D., Hufnagel, L., & Geisel, T. (2006). The scaling laws of human travel. Nature, 439(7075), 462-465.
 
     """
     pts = sp.geometry.values
     return np.array([haversine_dist(pts[i - 1].x, pts[i - 1].y, pts[i].x, pts[i].y)[0] for i in range(1, len(pts))])
+
+
+def wait_time(df):
+    """
+    Wait time consecutive locations.
+
+    Parameters
+    ----------
+    sp : DataFrame
+        Staypoints with time information, either provided in "duration" column, or in "finished_at" and "started_at" columns.
+
+    Returns
+    -------
+    np.array
+        Array containing the wait time.
+
+    References
+    ----------
+    [1] Brockmann, D., Hufnagel, L., & Geisel, T. (2006). The scaling laws of human travel. Nature, 439(7075), 462-465.
+
+    """
+    if "duration" in df.columns:
+        return df["duration"].values
+    else:
+        # TODO: check
+        return ((df["finished_at"] - df["started_at"]).dt.total_seconds() / 3600).values
 
 
 def location_frquency(sp):

@@ -9,7 +9,7 @@ from shapely import wkt
 import matplotlib.pyplot as plt
 import powerlaw
 
-from mobmetric import radius_gyration, jump_length, location_frquency
+from mobmetric import radius_gyration, jump_length, location_frquency, wait_time
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -22,9 +22,9 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "metric",
-        default="locf",
+        default="wait",
         nargs="?",
-        choices=["rg", "locf", "jump"],
+        choices=["rg", "locf", "jump", "wait"],
         help="Metric to calculate (default: %(default)s)",
     )
 
@@ -38,6 +38,7 @@ if __name__ == "__main__":
         metric = jump_length(sp)
         xlabel = "$\Delta r\,(m)$"
         ylabel = "$P(\Delta r)$"
+        xmin = 1
 
     elif args.metric == "rg":
         metric = radius_gyration(sp, method=args.method, print_progress=True)
@@ -46,6 +47,14 @@ if __name__ == "__main__":
 
         xlabel = "$Rg$ (km)"
         ylabel = "$P(Rg)$"
+        xmin = 1
+
+    elif args.metric == "wait":
+        metric = wait_time(sp)
+
+        xlabel = "$\Delta t\,(hour)$"
+        ylabel = "$P(\Delta t)$"
+        xmin = 0.1
 
     elif args.metric == "locf":
         loc_freq = location_frquency(sp)
@@ -60,9 +69,9 @@ if __name__ == "__main__":
 
     plt.figure(figsize=(8, 5))
 
-    if args.metric == "jump" or args.metric == "rg":
+    if args.metric == "jump" or args.metric == "rg" or args.metric == "wait":
         # fit power law
-        fit = powerlaw.Fit(metric, xmin=1)
+        fit = powerlaw.Fit(metric, xmin=xmin)
 
         # plotting
         powerlaw.plot_pdf(metric, label="data")

@@ -1,5 +1,5 @@
 from mobmetric.entropy import random_entropy, uncorrelated_entropy, real_entropy
-from mobmetric.metrics import radius_gyration, jump_length, location_frquency
+from mobmetric.metrics import radius_gyration, jump_length, location_frquency, wait_time
 
 
 __all__ = [
@@ -9,5 +9,6 @@ __all__ = [
     "location_frquency",
     "radius_gyration",
     "jump_length",
-    "location_frquency"
+    "location_frquency",
+    "wait_time"
 ]
