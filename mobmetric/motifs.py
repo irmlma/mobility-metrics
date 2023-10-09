@@ -6,6 +6,7 @@ import networkx as nx
 
 from trackintel.analysis.tracking_quality import _split_overlaps
 
+from tqdm import tqdm
 
 def mobility_motifs(sp, proportion_filter=0.005):
     """
@@ -99,7 +100,7 @@ def _get_user_day_graph(sp):
     user_day_ls = []
 
     # consider up to 6 location visits per day
-    for uniq_visits in range(1, 7):
+    for uniq_visits in tqdm(range(1, 7)):
         curr_sp = sp.loc[sp["uniq_visits"] == uniq_visits].copy()
         curr_sp["next_loc"] = curr_sp["location_id"].shift(-1)
 

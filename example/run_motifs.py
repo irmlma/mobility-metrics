@@ -36,22 +36,45 @@ if __name__ == "__main__":
         nargs="?",
         help="Proportion filter for considering day graphs as motifs (default: %(default)s)",
     )
+    parser.add_argument(
+        "time_format",
+        default="relative",
+        nargs="?",
+        choices=["absolute", "relative"],
+        help="Dataset (default: %(default)s)",
+    )
 
     args = parser.parse_args()
 
     # read and preprocess
-    sp = pd.read_csv("data/input/dtepr.csv", index_col="index")
-    sp["geometry"] = sp["geometry"].apply(wkt.loads)
-    sp = gpd.GeoDataFrame(sp, geometry="geometry", crs="EPSG:4326")
+    if args.time_format == "absolute":
+        sp = pd.read_csv("data/input/sp.csv", index_col="id")
+
+        geom_name = "geom"
+    elif args.time_format == "relative":
+        sp = pd.read_csv("data/input/dtepr.csv", index_col="index")
+
+        geom_name = "geometry"
+    else:
+        raise AttributeError(
+            f"time_format unknown. Please check the input arguement. We only support 'absolute', 'relative'. You passed {args.method}"
+        )
+
+    sp[geom_name] = sp[geom_name].apply(wkt.loads)
+    sp = gpd.GeoDataFrame(sp, geometry=geom_name, crs="EPSG:4326")
 
     sp.index.name = "id"
     sp.reset_index(inplace=True)
 
-    # transfer duration to absolut time format for each user
-    sp = sp.groupby("user_id", as_index=False).apply(
-        _transfer_time_to_absolute, start_time=datetime.datetime(2023, 1, 1, hour=8)
-    )
-    sp.reset_index(drop=True, inplace=True)
+    if args.time_format == "absolute":
+        sp["started_at"] = pd.to_datetime(sp["started_at"], format="mixed", yearfirst=True, utc=True)
+        sp["finished_at"] = pd.to_datetime(sp["finished_at"], format="mixed", yearfirst=True, utc=True)
+    else:
+        # transfer duration to absolut time format for each user
+        sp = sp.groupby("user_id", as_index=False).apply(
+            _transfer_time_to_absolute, start_time=datetime.datetime(2023, 1, 1, hour=8)
+        )
+        sp.reset_index(drop=True, inplace=True)
 
     ## get the motifs
     sp_motifs = mobility_motifs(sp, proportion_filter=args.proportion_filter)

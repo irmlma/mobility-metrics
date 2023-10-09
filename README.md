@@ -40,11 +40,11 @@ python example/run_motifs.py
 ```
 for examples of calculating mobility motifs. Motifs calculation receives the following parameter:
 - `proportion_filter` default 0.005. Filter to control how frequent a pattern coulf be considered a motifs, e.g., 0.005 means patterns occuring more than 0.5% of all the patterns are considered motifs.
+- `time_format` of [`absolute`, `relative`], default `relative`. Specify whether the input dataset is in absolute time format (e.g., started_at, finished_at) or in relative time format (e.g., started_at, duration) (obtained from mobility simulation). 
 
 Dataset distribution plot and motifs distribution plots will be shown after mobility motifs calculation.
 
 ## Known issues:
-- check mobility motifs calculation with real data. 
 
 ## TODO:
 
