@@ -4,7 +4,6 @@ channels:
   - defaults
 dependencies:
   - python=3.10
-  - geopandas
-  - trackintel
+  - trackintel=1.2.2
   - powerlaw
   - networkx
