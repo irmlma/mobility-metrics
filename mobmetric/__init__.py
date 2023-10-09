@@ -1,6 +1,6 @@
 from mobmetric.entropy import random_entropy, uncorrelated_entropy, real_entropy
 from mobmetric.metrics import radius_gyration, jump_length, location_frquency, wait_time
-
+from mobmetric.motifs import mobility_motifs
 
 __all__ = [
     "random_entropy",
@@ -10,5 +10,6 @@ __all__ = [
     "radius_gyration",
     "jump_length",
     "location_frquency",
-    "wait_time"
+    "wait_time",
+    "mobility_motifs"
 ]

@@ -7,3 +7,4 @@ dependencies:
   - geopandas
   - trackintel
   - powerlaw
+  - networkx
