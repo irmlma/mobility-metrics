@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import geopandas as gpd
 import datetime
+import os
 
 import scipy.stats as stats
 
@@ -12,19 +13,43 @@ import matplotlib.pyplot as plt
 from mobmetric import mobility_motifs
 
 
-def _transfer_time_to_absolute(df, start_time):
-    duration_arr = df["duration"].to_list()[:-1]
-    duration_arr.insert(0, 0)
-    timedelta_arr = np.array([datetime.timedelta(hours=i) for i in np.cumsum(duration_arr)])
-
-    df["started_at"] = timedelta_arr + start_time
-    df["finished_at"] = df["started_at"] + pd.to_timedelta(df["duration"], unit="hours")
-
-    return df
-
-
 def _get_motifs_proportion(df):
     return (len(df["class"]) - df["class"].isna().sum()) / len(df["class"])
+
+
+def load_data(sp, time_format):
+    sp["geometry"] = sp["geometry"].apply(wkt.loads)
+    sp = gpd.GeoDataFrame(sp, geometry="geometry", crs="EPSG:4326")
+
+    sp.index.name = "id"
+    sp.reset_index(inplace=True)
+
+    if time_format == "absolute":
+        sp["started_at"] = pd.to_datetime(sp["started_at"], format="mixed", yearfirst=True, utc=True)
+        sp["finished_at"] = pd.to_datetime(sp["finished_at"], format="mixed", yearfirst=True, utc=True)
+    elif time_format == "relative":
+
+        def _transfer_time_to_absolute(df, start_time):
+            duration_arr = df["duration"].to_list()[:-1]
+            duration_arr.insert(0, 0)
+            timedelta_arr = np.array([datetime.timedelta(hours=i) for i in np.cumsum(duration_arr)])
+
+            df["started_at"] = timedelta_arr + start_time
+            df["finished_at"] = df["started_at"] + pd.to_timedelta(df["duration"], unit="hours")
+
+            return df
+
+        # transfer duration to absolut time format for each user
+        sp = sp.groupby("user_id", as_index=False).apply(
+            _transfer_time_to_absolute, start_time=datetime.datetime(2023, 1, 1, hour=8)
+        )
+        sp.reset_index(drop=True, inplace=True)
+    else:
+        raise AttributeError(
+            f"time_format unknown. Please check the input arguement. We only support 'absolute', 'relative'. You passed {args.method}"
+        )
+
+    return sp
 
 
 if __name__ == "__main__":
@@ -38,43 +63,24 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "time_format",
-        default="relative",
+        default="absolute",
         nargs="?",
         choices=["absolute", "relative"],
         help="Dataset (default: %(default)s)",
+    )
+    parser.add_argument(
+        "dataset",
+        default="sp",
+        nargs="?",
+        help="Dataset for running (default: %(default)s)",
     )
 
     args = parser.parse_args()
 
     # read and preprocess
-    if args.time_format == "absolute":
-        sp = pd.read_csv("data/input/sp.csv", index_col="id")
 
-        geom_name = "geom"
-    elif args.time_format == "relative":
-        sp = pd.read_csv("data/input/dtepr.csv", index_col="index")
-
-        geom_name = "geometry"
-    else:
-        raise AttributeError(
-            f"time_format unknown. Please check the input arguement. We only support 'absolute', 'relative'. You passed {args.method}"
-        )
-
-    sp[geom_name] = sp[geom_name].apply(wkt.loads)
-    sp = gpd.GeoDataFrame(sp, geometry=geom_name, crs="EPSG:4326")
-
-    sp.index.name = "id"
-    sp.reset_index(inplace=True)
-
-    if args.time_format == "absolute":
-        sp["started_at"] = pd.to_datetime(sp["started_at"], format="mixed", yearfirst=True, utc=True)
-        sp["finished_at"] = pd.to_datetime(sp["finished_at"], format="mixed", yearfirst=True, utc=True)
-    else:
-        # transfer duration to absolut time format for each user
-        sp = sp.groupby("user_id", as_index=False).apply(
-            _transfer_time_to_absolute, start_time=datetime.datetime(2023, 1, 1, hour=8)
-        )
-        sp.reset_index(drop=True, inplace=True)
+    sp = pd.read_csv(os.path.join("data", "input", f"{args.dataset}.csv"), index_col="index")
+    sp = load_data(sp, time_format=args.time_format)
 
     ## get the motifs
     sp_motifs = mobility_motifs(sp, proportion_filter=args.proportion_filter)
