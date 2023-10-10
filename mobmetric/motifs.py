@@ -8,6 +8,7 @@ from trackintel.analysis.tracking_quality import _split_overlaps
 
 from tqdm import tqdm
 
+
 def mobility_motifs(sp, proportion_filter=0.005):
     """
     Get the mobility motifs for a input dataset (sp).

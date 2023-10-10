@@ -22,7 +22,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "metric",
-        default="wait",
+        default="rg",
         nargs="?",
         choices=["rg", "locf", "jump", "wait"],
         help="Metric to calculate (default: %(default)s)",
@@ -30,7 +30,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    sp = pd.read_csv("data/input/depr.csv", index_col="index")
+    sp = pd.read_csv("data/input/dtepr.csv", index_col="index")
     sp["geometry"] = sp["geometry"].apply(wkt.loads)
     sp = gpd.GeoDataFrame(sp, geometry="geometry", crs="EPSG:4326")
 
