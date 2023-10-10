@@ -63,14 +63,14 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "time_format",
-        default="absolute",
+        default="relative",
         nargs="?",
         choices=["absolute", "relative"],
         help="Dataset (default: %(default)s)",
     )
     parser.add_argument(
         "dataset",
-        default="sp",
+        default="dtepr",
         nargs="?",
         help="Dataset for running (default: %(default)s)",
     )
