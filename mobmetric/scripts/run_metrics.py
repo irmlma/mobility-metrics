@@ -1,4 +1,5 @@
 import argparse
+import os
 
 import numpy as np
 import pandas as pd
@@ -27,10 +28,16 @@ if __name__ == "__main__":
         choices=["rg", "locf", "jump", "wait"],
         help="Metric to calculate (default: %(default)s)",
     )
+    parser.add_argument(
+        "dataset",
+        default="dtepr",
+        nargs="?",
+        help="Dataset for running (default: %(default)s)",
+    )
 
     args = parser.parse_args()
 
-    sp = pd.read_csv("data/input/dtepr.csv", index_col="index")
+    sp = pd.read_csv(os.path.join("data", "input", f"{args.dataset}.csv"), index_col="index")
     sp["geometry"] = sp["geometry"].apply(wkt.loads)
     sp = gpd.GeoDataFrame(sp, geometry="geometry", crs="EPSG:4326")
 

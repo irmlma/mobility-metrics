@@ -1,4 +1,5 @@
 import argparse
+import os
 
 import numpy as np
 import pandas as pd
@@ -29,9 +30,15 @@ if __name__ == "__main__":
         choices=["random", "uncorrelated", "real", "all"],
         help="Method for calculating mobility entropy (default: %(default)s)",
     )
+    parser.add_argument(
+        "dataset",
+        default="dtepr",
+        nargs="?",
+        help="Dataset for running (default: %(default)s)",
+    )
     args = parser.parse_args()
 
-    sps = pd.read_csv("data/input/dtepr.csv", index_col="index")
+    sps = pd.read_csv(os.path.join("data", "input", f"{args.dataset}.csv"), index_col="index")
 
     entropy_result_ls = []
     if args.method == "random":
