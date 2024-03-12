@@ -13,5 +13,5 @@ __all__ = [
     "jump_length",
     "location_frquency",
     "wait_time",
-    "mobility_motifs"
+    "mobility_motifs",
 ]

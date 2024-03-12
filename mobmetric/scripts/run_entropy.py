@@ -62,7 +62,6 @@ if __name__ == "__main__":
             f"Method unknown. Please check the input arguement. We only support 'random', 'uncorrelated', 'real', 'all'. You passed {args.method}"
         )
 
-    #
     # ploting
     fig, ax = plt.subplots(1, 1, figsize=(8, 5))
 
