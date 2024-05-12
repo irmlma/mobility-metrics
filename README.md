@@ -22,7 +22,7 @@ pip install -e .
 
 ## Evaluate mobility behavior using mobility metrics
 
-Dataset distribution plots will be shown after metric calculation. Input data of location visit sequences should be stored in the `data\input` folder. We implement basic mobility metrics as follows: 
+Dataset distribution plots will be shown after metric calculation, and stored in the `.\data\input` folder (will be created if not existing). Input data of location visit sequences should be stored in the `.\data\input` folder. We implement basic mobility metrics as follows: 
 
 ### Basic metrics
 Run 

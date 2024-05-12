@@ -97,4 +97,7 @@ if __name__ == "__main__":
     plt.xlabel(xlabel, fontsize=16)
     plt.ylabel(ylabel, fontsize=16)
 
-    plt.show()
+    log_dir = os.path.join("data", "output")
+    if not os.path.exists(log_dir):
+        os.makedirs(log_dir, exist_ok=True)
+    plt.savefig(os.path.join(log_dir, f"{args.metric}.png"), bbox_inches="tight", dpi=600)

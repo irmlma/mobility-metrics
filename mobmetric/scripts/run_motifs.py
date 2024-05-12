@@ -103,7 +103,10 @@ if __name__ == "__main__":
     plt.xlabel("Motifs proportion", fontsize=16)
     plt.ylabel("PDF", fontsize=16)
 
-    plt.show()
+    log_dir = os.path.join("data", "output")
+    if not os.path.exists(log_dir):
+        os.makedirs(log_dir, exist_ok=True)
+    plt.savefig(os.path.join(log_dir, "Motifs proportion across users.png"), bbox_inches="tight", dpi=600)
 
     # plot the motifs distribution for all user days
     plt.figure(figsize=(8, 5))
@@ -124,4 +127,4 @@ if __name__ == "__main__":
     plt.xlabel("Motifs", fontsize=16)
     plt.ylabel("Proportion", fontsize=16)
 
-    plt.show()
+    plt.savefig(os.path.join(log_dir, "Mean motifs distribution.png"), bbox_inches="tight", dpi=600)
