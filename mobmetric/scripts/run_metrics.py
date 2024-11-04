@@ -81,7 +81,7 @@ if __name__ == "__main__":
         fit = powerlaw.Fit(metric, xmin=xmin)
 
         # plotting
-        powerlaw.plot_pdf(metric, label="data")
+        powerlaw.plot_pdf(metric[metric > xmin], label="data")
         fit.power_law.plot_pdf(linestyle="--", label="powerlaw fit")
         fit.truncated_power_law.plot_pdf(linestyle="--", label="truncated power law")
         fit.lognormal.plot_pdf(linestyle="--", label="lognormal fit")
